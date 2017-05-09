@@ -1,0 +1,18 @@
+Data model for "order items":
+order_id, order_item_order_id, product_id, quantity, subtotal, product_price
+1,1,957,1,299.98,299.98
+2,2,1073,1,199.99,199.99
+3,2,502,5,250.0,50.0
+4,2,403,1,129.99,129.99
+
+val orderItemss = sc.textFile("/Users/kathiravan/SparkScala/data-master/retail_db/order_items/part-00000.txt")
+
+//Example for "sortBy" => This function can be executed on a RDD
+val sortByPrice = orders.sortBy(rec => rec.split(",")(5).toDouble)
+sortByPrice.take(100).foreach(println)
+
+//Example for "sortByKey" => This function can be performed on a (K , V) tuple.
+val ordersItemsMap = orders.map(rec => ( rec.split(",")(0).toInt , rec.split(",")(5).toDouble ))
+val sortByOrderId = ordersMap.sortByKey() // Use sortByKey(false) to sort in reverse order
+sortByOrderId.take(100).foreach(println)
+
