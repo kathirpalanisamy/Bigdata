@@ -7,12 +7,24 @@ order_id, order_item_order_id, product_id, quantity, subtotal, product_price
 
 val orderItemss = sc.textFile("/Users/kathiravan/SparkScala/data-master/retail_db/order_items/part-00000.txt")
 
-//Example for "sortBy" => This function can be executed on a RDD
+// Example for "sortBy" => This function can be executed on a RDD
 val sortByPrice = orders.sortBy(rec => rec.split(",")(5).toDouble)
 sortByPrice.take(100).foreach(println)
 
-//Example for "sortByKey" => This function can be performed on a (K , V) tuple.
+// Example for "sortByKey" => This function can be performed on a (K , V) tuple.
 val ordersItemsMap = orders.map(rec => ( rec.split(",")(0).toInt , rec.split(",")(5).toDouble ))
 val sortByOrderId = ordersMap.sortByKey() // Use sortByKey(false) to sort in reverse order
 sortByOrderId.take(100).foreach(println)
 
+// Example for "GroupByKey" with "sorted"
+val products = sc.textFile("/Users/kathiravan/SparkScala/data-master/retail_db/products/part-00000.txt")
+val productsMap = products.map(rec => ( rec.split(",")(1).toInt , rec.split(",")(4).toFloat ))
+val productsMapGroup = productsMap.groupByKey()
+val productsMapGroupSort = productsMapGroup.map(rec => (rec._1, rec._2.toList.sorted))
+productsMapGroupSort.take(5).foreach(println)
+
+// Example for "GroupByKey" with "sortBy"
+val products = sc.textFile("/Users/kathiravan/SparkScala/data-master/retail_db/products/part-00000.txt")
+val productsMap = products.map(rec => ( rec.split(",")(1).toInt , (rec.split(",")(2), rec.split(",")(4).toFloat) ))
+val productsMapGroup = productsMap.groupByKey()
+val productsMapGroupSort = productsMapGroup.map(rec => (rec._1, rec._2.toList.sortBy(inrec => inrec._2)))
