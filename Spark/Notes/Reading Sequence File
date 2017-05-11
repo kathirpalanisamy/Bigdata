@@ -1,0 +1,22 @@
+// Converting a Text file into a Sequence file
+
+// Sequence file follows [Key, Value] format so we need to convert the data into [Key, Value] format before saving it as a Sequence file
+
+// While reading the Sequence file, we need to pass the hadoop data type of the key and value in order to read the sequence file. To use hadoop data types, we need to import org.apache.hadoop.io._
+
+// Example 1: Using valid [Key, Value] pair
+val orders = sc.textFile("/Users/kathiravan/SparkScala/data-master/retail_db/orders/part-00000.txt")
+orders.map(rec => (rec.split(",")(0).toInt , rec.split(",")(3)) ).saveAsSequenceFile("/Users/kathiravan/SparkScala/SequenceFile")
+
+import org.apache.hadoop.io._
+val ordersSeq = sc.sequenceFile("/Users/kathiravan/SparkScala/SequenceFile/part-00000", classOf[IntWritable], classOf[Text]).map(rec => rec.toString)
+ordersSeq.take(5).foreach(println)
+
+
+// Example 2: Using a null key and the entire record as value
+val orders = sc.textFile("/Users/kathiravan/SparkScala/data-master/retail_db/orders/part-00000.txt")
+orders.map( rec => (NullWritable.get, rec.toString) ).saveAsSequenceFile("/Users/kathiravan/SparkScala/SequenceFile")
+
+import org.apache.hadoop.io._
+val ordersSeq = sc.sequenceFile("/Users/kathiravan/SparkScala/SequenceFile/part-00000", classOf[NullWritable], classOf[Text]).map(rec => rec._2.toString)
+ordersSeq.take(5).foreach(println)
