@@ -12,3 +12,10 @@ val ordersMap = orders.map( rec => (new IntWritable(rec.split(",")(0).toInt) , n
 
 // saveAsNewAPIHadoopFile takes 4 arguments => Destination, input key datatype, input value datatpy and Output file format
 ordersMap.saveAsNewAPIHadoopFile("/Users/kathiravan/SparkScala/SequenceFile", classOf[IntWritable], classOf[Text], classOf[SequenceFileOutputFormat[IntWritable, Text]])
+
+
+// Follow the below procedure to read the sequence file using Hadoop API
+import org.apache.hadoop.io._
+import org.apache.hadoop.mapreduce.lib.input._
+val seqFile = sc.newAPIHadoopFile("/Users/kathiravan/SparkScala/SequenceFile/part-r-00000", classOf[SequenceFileInputFormat[IntWritable, Text]], classOf[IntWritable], classOf[Text]).map(rec => rec.toString)
+seqFile.take(5).foreach(println)
