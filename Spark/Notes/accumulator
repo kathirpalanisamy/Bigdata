@@ -1,0 +1,15 @@
+accumulator:
+
+// The below counter will not work since Spark do not know how to handle this global counter in distributed environment
+
+var count = 0
+val orders = sc.textFile("/Users/kathiravan/SparkScala/data-master/retail_db/orders/part-00000.txt")
+val ordersMap = orders.map(rec => {count += 1; rec}).collect()
+println(count)    // This will return 0 which is incorrect
+
+// This is when we utilize accumulator since it is part of spark context
+
+var count = sc.accumulator(0)
+val orders = sc.textFile("/Users/kathiravan/SparkScala/data-master/retail_db/orders/part-00000.txt")
+val ordersMap = orders.map(rec => {count += 1; rec}).collect()
+println(count)    // This result will match ordersMap.size
