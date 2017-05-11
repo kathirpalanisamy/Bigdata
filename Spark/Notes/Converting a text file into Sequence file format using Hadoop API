@@ -1,0 +1,14 @@
+// Converting a text file into Sequence file format using Hadoop API (Same procedure applies to other file formats)
+
+// We need to convert the text file into [Key, Value] pairs in order to save it as Sequence file. That [Key, Value] must be type casted to Hadoop data types since we are going to use Hadoop API.
+
+// We need to import import org.apache.hadoop.io._ and import org.apache.hadoop.mapreduce.lib.output._. The first one is to import hadoop data types and the second one is to import the saveAsNewAPIHadoopFile API.
+
+Example:
+import org.apache.hadoop.io._
+import org.apache.hadoop.mapreduce.lib.output._
+val orders = sc.textFile("/Users/kathiravan/SparkScala/data-master/retail_db/orders/part-00000.txt")
+val ordersMap = orders.map( rec => (new IntWritable(rec.split(",")(0).toInt) , new Text(rec.split(",")(3).toString) ) )
+
+// saveAsNewAPIHadoopFile takes 4 arguments => Destination, input key datatype, input value datatpy and Output file format
+ordersMap.saveAsNewAPIHadoopFile("/Users/kathiravan/SparkScala/SequenceFile", classOf[IntWritable], classOf[Text], classOf[SequenceFileOutputFormat[IntWritable, Text]])
