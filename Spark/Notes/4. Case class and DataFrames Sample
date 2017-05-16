@@ -1,0 +1,17 @@
+//Creating a case class
+case class Orders(Order_id: Int,
+				  Order_date: String,
+				  Order_customer_id: Int,
+				  Order_status: String)
+
+
+//Creating a simple DataFrame using case class object
+val ordersDF = sc.textFile("/Users/kathiravan/SparkScala/data-master/retail_db/orders/part-00000.txt").
+                  map(rec => {
+                               val r = rec.split(",");
+                               Orders(r(0).toInt, r(1), r(2).toInt, r(3))
+                             }
+                     ).toDF
+
+
+ordersDF.select("Order_id", "Order_date", "Order_status").take(25).foreach(println)
