@@ -1,0 +1,51 @@
+// Finding total revenue using Data Frames
+// Create a cse class for orders table
+case class Orders(order_id: Int,
+				  order_date: String,
+				  order_customer_id: Int,
+				  order_status: String)
+
+// Creating DataFrame for orders data
+val ordersDF = sc.textFile("/Users/kathiravan/SparkScala/data-master/retail_db/orders/part-00000.txt").
+                  map(rec => {val r = rec.split(",")
+                              Orders(r(0).toInt, r(1), r(2).toInt, r(3))
+                             }).toDF
+ordersDF.show
+
+// Filter the COMPLETE and CLOSED orders from Data Frame
+val ordersFilteredDF = ordersDF.filter(ordersDF("order_status") === "COMPLETE" or 
+                                       ordersDF("order_status") === "CLOSED")
+ordersFilteredDF.show
+
+// Create a cse class for order_items table
+case class Order_items(order_item_id: Int,
+                  order_item_order_id: Int,
+                  order_item_product_id: Int,
+                  order_item_quantity: Int,
+                  order_item_subtotal: Double,
+                  order_item_product_price: Double)
+
+/ Creating DataFrame for order_items data
+val orderItemsDF = sc.textFile("/Users/kathiravan/SparkScala/data-master/retail_db/order_items/part-00000.txt").
+                map(rec => {val r = rec.split(",")
+                Order_items(r(0).toInt, r(1).toInt, r(2).toInt, r(3).toInt, r(4). toDouble, r(5).toDouble)
+                           }).toDF
+OrderItemsDF.show
+
+// Joining the filtered order data with order items data on order id = order item order id
+val ordersJoinDF = ordersFilteredDF.
+                   join(orderItemsDF, ordersFilteredDF("order_id") === orderItemsDF("order_item_order_id"))
+ordersJoinDF.show
+
+// Group the joined data by order date
+val ordersGroupedDF = ordersJoinDF.groupBy("order_date")
+
+// Print the daily revenue by date
+ordersGroupedDF.agg(sum("order_item_subtotal")).orderBy($"order_date".asc).show
+
+/* If the agg or sum is not working => import org.apache.spark.sql.functions._ */
+
+/* This operation takes 200 tasks by default. You can check it by running the below command.
+sqlContext.getConf("spark.sql.shuffle.partitions")
+
+To change this number, execute => sqlContext.setConf("spark.sql.shuffle.partitions", 2.toString) */
