@@ -1,0 +1,18 @@
+agent1.sources = a1
+agent1.sinks = s1
+agent1.channels = c1
+
+agent1.sources.a1.type = netcat
+agent1.sources.a1.bind = localhost
+agent1.sources.a1.port = 7777
+
+agent1.sinks.s1.type = logger
+
+agent1.channels.c1.type = memory
+
+agent1.sources.a1.channels = c1
+agent1.sinks.s1.channel = c1
+
+
+// Execute the following command to run the flume agent
+flume-ng agent -c /home/cloudera/cca175/flume -f /home/cloudera/cca175/flume/agent1.txt -name agent1
