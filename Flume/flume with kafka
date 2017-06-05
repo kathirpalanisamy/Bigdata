@@ -1,0 +1,42 @@
+// Flume with Kafka - Sample
+// Create a flume config file as below. Name the file as kandf.conf (agent name will be kandf).
+
+kandf.sources = execsource
+kandf.channels = mchannel
+kandf.sinks = kafkasink
+
+kandf.sources.execsource.type = exec
+kandf.sources.execsource.command = tail -F /opt/gen_logs/logs/access.log
+
+kandf.channels.mchannel.type = memory
+kandf.channels.mchannel.capacity = 1000
+kandf.channels.mchannel.transactionCapacity = 100
+
+kandf.sinks.kafkasink.type = org.apache.flume.sink.kafka.KafkaSink
+kandf.sinks.kafkasink.brokerList = localhost:9092
+kandf.sinks.kafkasink.topic = kafkatopic
+
+kandf.sources.execsource.channels = mchannel
+kandf.sinks.kafkasink.channel = mchannel
+
+// Download the kafka binaries from Apache kafka site - kafka_2.11-0.10.2.0.tgz and unzip it.
+
+// Kafka uses ZooKeeper so you need to first start a ZooKeeper server if you don't already have one. You can use the convenience script packaged with kafka to get a quick-and-dirty single-node ZooKeeper instance.
+
+bin/zookeeper-server-start.sh config/zookeeper.properties
+
+// Now start the Kafka server:
+
+bin/kafka-server-start.sh config/server.properties
+
+// Run the flume agent now
+
+flume-ng agent -n kandf -f /home/cloudera/Desktop/Spark_Streaming/kandf.conf -c kandf.conf
+
+// Execute the below command to see if the topic "kafkatopic" is created
+
+bin/kafka-topics.sh --list --zookeeper localhost:2181
+
+// Execute the below command to consume the topic
+
+bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic kafkatopic --from-beginning
