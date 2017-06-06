@@ -1,0 +1,18 @@
+agent1.sources = netcatsource
+agent1.sinks = loggersink hdfssink
+agent1.channels = memorychannel filechannel
+
+agent1.sources.netcatsource.type = netcat
+agent1.sources.netcatsource.bind = localhost
+agent1.sources.netcatsource.port = 7777
+
+agent1.sinks.loggersink.type = logger
+agent1.sinks.hdfssink.type = hdfs
+agent1.sinks.hdfssink.hdfs.path = hdfs://quickstart.cloudera:8020/user/cloudera/Flume
+
+agent1.channels.memorychannel.type = memory
+agent1.channels.filechannel.type = file
+
+agent1.sources.netcatsource.channels = memorychannel filechannel
+agent1.sinks.loggersink.channel = memorychannel
+agent1.sinks.hdfssink.channel = filechannel
