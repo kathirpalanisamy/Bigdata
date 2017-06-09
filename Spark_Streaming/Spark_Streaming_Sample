@@ -1,0 +1,11 @@
+sc.stop()
+import org.apache.spark.SparkConf
+import org.apache.spark.streaming.StreamingContext
+import org.apache.spark.streaming._
+val conf = new SparkConf().setMaster("local[*]").setAppName("Sample Streaming")
+val ssc = new StreamingContext(conf, Seconds(10))
+val lines = ssc.socketTextStream("localhost", 44444)
+lines.print
+ssc.start
+
+// In a separate terminal, tpye "nc -lk 44444" and then start typing messages. These messages will appear in the terminal where streaming happens.
