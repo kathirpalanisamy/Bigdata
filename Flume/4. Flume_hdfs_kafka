@@ -1,0 +1,26 @@
+agent1.sources = execsource
+agent1.sinks = hdfssink kafkasink
+agent1.channels = memorychannel
+
+agent1.sources.execsource.type = exec
+agent1.sources.execsource.command = tail -F /opt/gen_logs/logs/access.log
+
+agent1.sinks.hdfssink.type = hdfs
+agent1.sinks.hdfssink.hdfs.path = hdfs://quickstart.cloudera:8020/user/cloudera/Flume_Example_%m-%d-%Y
+agent1.sinks.hdfssink.hdfs.filePrefix = LogData
+agent1.sinks.hdfssink.hdfs.fileSuffix = .txt
+agent1.sinks.hdfssink.hdfs.rollInterval = 30
+agent1.sinks.hdfssink.hdfs.rollSize = 1048576
+agent1.sinks.hdfssink.hdfs.rollCount = 0
+agent1.sinks.hdfssink.hdfs.fileType = DataStream
+agent1.sinks.hdfssink.hdfs.useLocalTimeStamp = true
+
+agent1.sinks.kafkasink.type = org.apache.flume.sink.kafka.KafkaSink
+agent1.sinks.kafkasink.brokerList = localhost:9092
+agent1.sinks.kafkasink.topic = kafkatopic1
+
+agent1.channels.memorychannel.type = memory
+
+agent1.sources.execsource.channels = memorychannel
+agent1.sinks.hdfssink.channel = memorychannel
+agent1.sinks.kafkasink.channel = memorychannel
