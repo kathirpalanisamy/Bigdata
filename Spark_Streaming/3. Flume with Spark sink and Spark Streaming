@@ -1,0 +1,49 @@
+Flume with Spark Sink
+=====================
+
+Step 1. Create the Flume config file
+------------------------------------
+agent1.sources = a1
+agent1.sinks = spark
+agent1.channels = c1
+
+agent1.sources.a1.type = netcat
+agent1.sources.a1.bind = localhost
+agent1.sources.a1.port = 7777
+
+agent1.sinks.spark.type = org.apache.spark.streaming.flume.sink.SparkSink
+agent1.sinks.spark.hostname = localhost
+agent1.sinks.spark.port = 9999
+agent1.sinks.spark.channel = memoryChannel
+
+agent1.channels.c1.type = memory
+
+agent1.sources.a1.channels = c1
+agent1.sinks.spark.channel = c1
+
+
+Step 2: Start the Flume agent
+-----------------------------
+flume-ng agent --name agent1 --conf /home/cloudera/Spark_Streaming --conf-file flume_with_sparksink.conf
+
+
+Step 3: Create Spark Streaming:
+-------------------------------
+Open spark-shell in another terminal and execute below commands:-
+sc.stop()
+import org.apache.spark.SparkConf
+import org.apache.spark.streaming._
+import org.apache.spark.streaming.flume._
+import org.apache.spark.util.IntParam
+val sparkConf = new SparkConf().setAppName("Flume with Spark Sink").setMaster("local[*]")
+val ssc = new StreamingContext(sparkConf, Seconds(30))
+val stream = FlumeUtils.createPollingStream(ssc, "localhost", 9999)
+stream.map(rec => new String(rec.event.getBody.array())).print()
+ssc.start
+
+
+Step 4: Pass the input data:
+----------------------------
+Open another terminal and enter the below command to open netcat webservice. Once opened, start typing the data. You will see the data streaming in the other window where spark-shell is hosted.
+
+nc localhost 7777
