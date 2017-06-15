@@ -1,0 +1,23 @@
+Reading a Text file, process it and save it into different file formats:
+========================================================================
+
+Step 1: Create sqlContext and set the shuffle partitions
+import org.apache.spark.sql.SQLContext
+val sqlContext = new SQLContext(sc)
+sqlContext.setConf("spark.sql.shuffle.partitions","1")
+
+Step 2: Create a case class for the input file layout
+case class Orders (order_id: Int, order_date: String, order_customer_id: Int, order_status: String)
+
+Step 3: Read the text file and convert it into a DataFrame
+val inrec = sc.textFile("/Users/kathiravan/SparkScala/data-master/retail_db/orders/part-00000.txt")
+val orderDF = inrec.map(rec => { val x = rec.split(","); Orders(x(0).toInt, x(1), x(2).toInt, x(3)) }).toDF()
+
+Step 4: Register the DataFrame as a Temp table
+orderDF.registerTempTable("orders")
+
+Step 5: Execute required SQL operations
+val result = sqlContext.sql("SELECT order_status, COUNT(1) as total_orders from orders GROUP BY order_status ORDER BY order_status")
+
+Step 6: Write the result into the required file format
+result.write.json("/Users/kathiravan/SparkScala/data-master/retail_db/categories/JSONOUT")
