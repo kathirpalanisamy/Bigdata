@@ -1,0 +1,15 @@
+Reading a Text file and save it into different file formats:
+============================================================
+
+Step 1: Create a case class for the input file layout
+case class Categories (category_id: Int, category_department_id: Int, category_name: String)
+
+Step 2: Read the text file and convert it into a DataFrame
+val inrec = sc.textFile("/Users/kathiravan/SparkScala/data-master/retail_db/categories/Text/categories.txt")
+val catDF = inrec.map(rec => {val x = rec.split(","); Categories(x(0).toInt, x(1).toInt, x(2)) }).toDF()
+
+Step 3: Write the DataFrame into the required file format
+catDF.write.json("/Users/kathiravan/SparkScala/data-master/retail_db/categories/JSON")
+catDF.write.orc("/Users/kathiravan/SparkScala/data-master/retail_db/categories/ORC")
+catDF.write.parquet("/Users/kathiravan/SparkScala/data-master/retail_db/categories/Parquet")
+catDF.write.csv("/Users/kathiravan/SparkScala/data-master/retail_db/categories/CSV")
