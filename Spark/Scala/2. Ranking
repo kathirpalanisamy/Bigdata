@@ -1,0 +1,13 @@
+import org.apache.spark.sql.SQLContext
+val sqlContext = new SQLContext(sc)
+sqlContext.setConf("spark.sql.shuffle.partitions","1")
+
+val productsRDD = sc.textFile("/Users/kathiravan/SparkScala/data-master/retail_db/products/part-00000.txt")
+
+case class products(product_id: Int, product_name: String, product_price: Float)
+
+val productsDF = productsRDD.map(rec => {val x = rec.split(","); products(x(0).toInt, x(2).toString, x(4).toFloat)}).toDF()
+
+productsDF.registerTempTable("products")
+
+sqlContext.sql("SELECT product_id, product_name, product_price, RANK() OVER (ORDER BY product_price DESC) AS Rank, DENSE_RANK() OVER (ORDER BY product_price DESC) AS Dense_Rank FROM products").write.csv("/Users/kathiravan/SparkScala/data-master/retail_db/products/Rank")
