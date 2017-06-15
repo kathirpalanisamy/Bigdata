@@ -1,0 +1,17 @@
+Reading data from different file formats:
+=========================================
+
+Step 01: Import SQLContext
+
+import org.apache.spark.sql.SQLContext
+val sqlContext = new SQLContext(sc)
+sqlContext.setConf("spark.sql.shuffle.partitions",2.toString)
+
+Step 02: Start reading files in the required format
+val orcFile = sqlContext.read.orc("/Users/kathiravan/SparkScala/data-master/retail_db/categories/orc/categories1.orc").show
+
+val parquetFile = sqlContext.read.parquet("/Users/kathiravan/SparkScala/data-master/retail_db/categories/parquet/categories1.parquet").show
+
+val jsonFile = sqlContext.read.json("/Users/kathiravan/SparkScala/data-master/retail_db/categories/json/categories1.json").show
+
+val csvFile = sqlContext.read.csv("/Users/kathiravan/SparkScala/data-master/retail_db/categories/csv/categories1.csv").show
