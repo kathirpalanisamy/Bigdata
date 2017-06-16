@@ -1,0 +1,44 @@
+Reading data from an avro file
+==============================
+Step 01: Import the avro package from databricks
+import com.databricks.spark.avro._
+
+Step 02: setup sqlContext if not exist
+import org.apache.spark.sql.SQLContext
+import spark.implicits._
+val sqlContext = new SQLContext(sc)
+sqlContext.setConf("spark.sql.shuffle.partitions",1.toString)
+
+Step 03: Read the avro file using sqlContext
+val avroData = sqlContext.read.avro("hdfs://quickstart.cloudera:8020/user/cloudera/departments/avro/part*")
+avroData.show
+
+
+Converting a parquet file into avro format
+==========================================
+Step 01: import avro from databricks
+import com.databricks.spark.avro._
+
+Step 02: Read the parquet file using sqlContext
+val parquetData = sqlContext.read.parquet("hdfs://quickstart.cloudera:8020/user/cloudera/departments/parquet/*.parquet")
+
+Step 03: Write the avro file using sqlContext
+parquetData.write.avro("hdfs://quickstart.cloudera:8020/user/cloudera/Test")
+
+
+Converting a text file into avro file
+=====================================
+Step 01: import avro from databricks
+import com.databricks.spark.avro._
+
+Step 02: Read the parquet file using sqlContext
+val textData = sc.textFile("hdfs://quickstart.cloudera:8020/user/cloudera/departments/part*")
+
+Step 03: Create a case class
+case class departments(department_id: Int, department_name: String)
+
+Step 04: Create a DataFrame using the case class
+val textDF = textData.map(rec => {val x = rec.split(","); departments(x(0).toInt, x(1).toString)}).toDF()
+
+Step 05: Write the Data Frame as an avro file
+textDF.write.avro("hdfs://quickstart.cloudera:8020/user/cloudera/test")
