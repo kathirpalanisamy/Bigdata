@@ -1,0 +1,78 @@
+player_assignment = {'X':'','Y':''}
+
+matrix = [[0 for x in range(3)] for y in range(3)]
+
+def get_input():
+    player1 = raw_input("ENTER THE NAME OF THE FIRST PLAYER : ")
+    symbol1 = raw_input("%s, WHAT IS THE MARKER YOU WANT TO PICK(X/Y)?" %player1.upper() )
+    player2 = raw_input("ENTER THE NAME OF THE SECOND PLAYER: ")
+    if symbol1[0].upper() == 'X':
+        player_assignment['X'] = player1.upper()
+        player_assignment['Y'] = player2.upper()
+    elif symbol1[0].upper() == 'Y':
+        player_assignment['Y'] = player1.upper()
+        player_assignment['X'] = player2.upper()
+    else:
+        print "SELECTED MARKER %s IS INVALID. PLEASE SELECT 'X' OR 'Y'." %symbol1
+        get_input()
+    print ' '
+
+def display_board():
+    print '   |   |   '
+    print ' %s | %s | %s ' %(matrix[0][0], matrix[0][1], matrix[0][2])
+    print '   |   |   '
+    print '-----------'
+    print '   |   |   '
+    print ' %s | %s | %s ' %(matrix[1][0], matrix[1][1], matrix[1][2])
+    print '   |   |   '
+    print '-----------'
+    print '   |   |   '
+    print ' %s | %s | %s ' %(matrix[2][0], matrix[2][1], matrix[2][2])
+    print '   |   |   '
+    print '-----------'
+    
+get_input()
+        
+for symbol, name in player_assignment.iteritems():
+    print name, 'IS ASSIGNED TO ', symbol
+print ' '
+
+display_board()
+
+i = 0;
+while i <= 8:
+    invalue = raw_input('ENTER THE POSITION AND MARKER (ENTER Q TO DISCONNECT): ')
+    if invalue.upper() == 'Q':
+        print 'THANKS FOR PLAYING TIC-TAC-TOE!!!'
+        break
+    insplit = invalue.split(',')    
+    if int(insplit[0]) <= 2 and int(insplit[1]) <= 2 and (insplit[2].upper() == 'X' or insplit[2].upper() == 'Y'):
+        if matrix[int(insplit[0])][int(insplit[1])] == 0:
+            matrix[int(insplit[0])][int(insplit[1])] = insplit[2].upper()
+            if (((matrix[0][0] == matrix[0][1] == matrix[0][2]) and (matrix[0][0] != 0 and matrix[0][1] != 0 and matrix[0][2] != 0)) or
+                ((matrix[1][0] == matrix[1][1] == matrix[1][2]) and (matrix[1][0] != 0 and matrix[1][1] != 0 and matrix[1][2] != 0)) or
+                ((matrix[2][0] == matrix[2][1] == matrix[2][2]) and (matrix[2][0] != 0 and matrix[2][1] != 0 and matrix[2][2] != 0)) or
+                ((matrix[0][0] == matrix[1][0] == matrix[2][0]) and (matrix[0][0] != 0 and matrix[1][0] != 0 and matrix[2][0] != 0)) or
+                ((matrix[0][1] == matrix[1][1] == matrix[2][1]) and (matrix[0][1] != 0 and matrix[1][1] != 0 and matrix[2][1] != 0)) or
+                ((matrix[0][2] == matrix[1][2] == matrix[2][2]) and (matrix[0][2] != 0 and matrix[1][2] != 0 and matrix[2][2] != 0)) or
+                ((matrix[0][0] == matrix[1][1] == matrix[2][2]) and (matrix[0][0] != 0 and matrix[1][1] != 0 and matrix[2][2] != 0)) or
+                ((matrix[0][2] == matrix[1][1] == matrix[2][0]) and (matrix[0][2] != 0 and matrix[1][1] != 0 and matrix[2][0] != 0))):
+                display_board()
+                print ' '
+                print 'CONGRATULATIONS, %s! YOU WIN!!!' %player_assignment[matrix[int(insplit[0])][int(insplit[1])]]
+                break
+            elif i == 8:
+                display_board()
+                print ' '
+                print 'MATCH DRAW. GOOD JOB TO BOTH OF YOU!!!'
+                break
+            display_board()
+            i += 1
+        else:
+            print 'THIS PLACE IS ALREADY TAKEN, TRY A NEW POSITION!'
+            display_board()
+            continue
+    else:
+        print 'GIVEN DATA IS INCORRECT! RE-ENTER THE DATA...'
+        display_board()
+        continue
