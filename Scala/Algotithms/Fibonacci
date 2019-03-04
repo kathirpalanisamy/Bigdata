@@ -1,10 +1,17 @@
-object Fibonacci extends App {
-  def fibonacci( n : Int) : Int = {
-    def fib_tail( n: Int, a:Int, b:Int): Int = n match {
-      case 0 => a
-      case _ => fib_tail( n-1, b, a+b )
+import scala.annotation.tailrec
+
+object FibonacciTailRecursive extends App {
+
+  println(fib(6))
+
+  def fib(x: Int): BigInt = {
+    @tailrec
+    def fibHelper(x: Int, prev: BigInt = 0, next: BigInt = 1): BigInt = x match {
+      case 0 => prev
+      case 1 => next
+      case _ => fibHelper(x - 1, next, (next + prev))
     }
-    return fib_tail( n, 0, 1)
+    fibHelper(x)
   }
-  println(fibonacci(6))
+
 }
