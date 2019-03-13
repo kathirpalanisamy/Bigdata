@@ -1,0 +1,8 @@
+package BigOnotation
+
+object LinearTime extends App {
+  val names: Array[String] = Array("Kathir", "Malathi", "Mithesh", "Mithilesh", "Mithra")
+  for (name <- names) {
+    println(name)
+  }
+}
