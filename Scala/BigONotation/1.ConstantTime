@@ -1,0 +1,6 @@
+package BigOnotation
+
+object ConstantTime extends App {
+  val names: Array[String] = Array("Kathir", "Malathi", "Mithesh", "Mithilesh", "Mithra")
+  println(names(0))
+}
