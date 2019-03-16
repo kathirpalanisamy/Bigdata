@@ -1,0 +1,34 @@
+package DataStructures.Array
+
+object ReverseString extends App {
+  def reverse1(str: String) : String = {
+    var revstr : Array[Char] = Array()
+    for(x <- str.length-1 to 0 by -1) {
+      revstr = revstr :+ str(x)
+    }
+    return revstr.mkString
+  }
+
+  def reverse2(str:String) : String = {
+    var revstr : Array[Char] = Array()
+    for (x <- 0 to str.length-1) {
+      revstr = str(x) +: revstr
+    }
+    return revstr.mkString
+  }
+
+  def reverse3(str:String) : String = {
+    if (str.isEmpty) ""
+    else reverse3(str.tail) + str.head
+  }
+
+  def reverse4(str:String) : String = {
+    return str.reverse
+  }
+
+  val str1 = "Hello World!!"
+  println(reverse1(str1))
+  println(reverse2(str1))
+  println(reverse3(str1))
+  println(reverse4(str1))
+}
