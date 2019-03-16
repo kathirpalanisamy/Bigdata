@@ -2,11 +2,7 @@ package DataStructures.Array
 
 object ReverseString extends App {
   def reverse1(str: String) : String = {
-    var revstr : Array[Char] = Array()
-    for(x <- str.length-1 to 0 by -1) {
-      revstr = revstr :+ str(x)
-    }
-    return revstr.mkString
+    (for(x <- str.length-1 to 0 by -1) yield str(x)).mkString
   }
 
   def reverse2(str:String) : String = {
