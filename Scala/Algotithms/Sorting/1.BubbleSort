@@ -1,0 +1,19 @@
+package Algorithms.Sorting
+
+object BubbleSort extends App {
+  def bubbleSort(input: Array[Int]) : Array[Int] = {
+    for (i <- 0 to input.length - 2) {
+      for (j <- 0 to input.length - 2) {
+        if (input(j) > input(j+1)) {
+          // Swap numbers
+          var temp = 0
+          temp = input(j)
+          input(j) = input(j+1)
+          input(j+1) = temp
+        }
+      }
+    }
+    return input
+  }
+  println(bubbleSort(Array(5,3,8,5,1,2,9,3)).mkString(" "))
+}
