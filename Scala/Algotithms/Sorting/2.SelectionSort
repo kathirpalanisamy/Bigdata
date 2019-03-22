@@ -1,0 +1,21 @@
+package Algorithms.Sorting
+
+import scala.annotation.tailrec
+
+object SelectionSort extends App {
+  def selectionSort(list:List[Int]):List[Int] = {
+    @tailrec
+    def selectSortHelper(list:List[Int], accumList:List[Int] = List[Int]()): List[Int] = {
+      list match {
+        case Nil => accumList
+        case _ => {
+          val min  = list.min
+          val requiredList = list.filter(_ != min)
+          selectSortHelper(requiredList, accumList ::: List.fill(list.length - requiredList.length)(min))
+        }
+      }
+    }
+    selectSortHelper(list)
+  }
+  println(selectionSort(List(5,2,8,1,6,2,9)).mkString(" "))
+}
