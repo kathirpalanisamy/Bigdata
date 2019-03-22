@@ -1,0 +1,17 @@
+package Algorithms.Sorting
+
+object InsertionSort extends App {
+      def sort(list: List[Int]): List[Int] = {
+        def insert(x: Int, xs: List[Int]): List[Int] = xs match {
+          case List() => List(x)
+          case y :: ys => if (x <= y) x :: xs else y :: insert(x, ys)
+        }
+
+        list match {
+          case List() => List()
+          case y :: ys => insert(y, sort(ys))
+        }
+      }
+
+      println(sort(List(4, 6, 33, 6, 99, 7, 12, 1, 8, 23, 3)).mkString(" "))
+}
