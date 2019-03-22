@@ -1,0 +1,12 @@
+object LinearSearch extends App {
+  def elementSearch(element: Int, list:List[Int]): Unit = {
+    for (i <- 0 to list.size - 1) {
+      if (element == list(i)) {
+        println("The element " + element + " is found at index " + i)
+        System.exit(0)
+      }
+    }
+    println("Element not found")
+  }
+  elementSearch(8, List(1,2,3,4,5,34,12,87,33,98))
+}
