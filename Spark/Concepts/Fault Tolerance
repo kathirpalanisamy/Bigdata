@@ -1,0 +1,9 @@
+Faults in a cluster can happen when one of the nodes processing data is crashed. In spark terms, RDD is split into partitions and each node (called the executors) is operating on a partition at any point of time. (Theoretically, each each executor can be assigned multiple tasks depending on the number of cores assigned to the job versus the number of partitions present in the RDD).
+
+By operation, what is really happening is a series of Scala functions (called transformations and actions in Spark terms depending on if the function is pure or side-effecting) executing on a partition of the RDD. These operations are composed together and Spark execution engine views these as a Directed Acyclic Graph of operations.
+
+Now, if a particular node crashes in the middle of an operation Z, which depended on operation Y, which inturn on operation X. The cluster manager (YARN/Mesos) finds out the node is dead and tries to assign another node to continue processing. This node will be told to operate on the particular partition of the RDD and the series of operations X->Y->Z (called lineage) that it has to execute, by passing in the Scala closures created from the application code. Now the new node can happily continue processing and there is effectively no data-loss.
+
+Spark also uses this mechanism to guarantee exactly-once processing, with the caveat that any side-effecting operation that you do like calling a database in a Spark Action block can be invoked multiple times. But if you view your transformations like pure functional mapping from one RDD to another, then you can be rest assured that the resulting RDD will have the elements from the source RDD processed only once.
+
+The domain of fault-tolerance in Spark is very vast and it needs much bigger explanation. I am hoping to see others coming up with technical details on how this is implemented, etc. Thanks for the great topic though.
