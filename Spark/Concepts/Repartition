@@ -1,0 +1,29 @@
+The repartition algorithm does a full shuffle and creates new partitions with data that's distributed evenly. Let's create a DataFrame with the numbers from 1 to 12.
+
+val x = (1 to 12).toList
+val numbersDf = x.toDF("number")
+numbersDf contains 4 partitions on my machine.
+
+numbersDf.rdd.partitions.size // => 4
+Here is how the data is divided on the partitions:
+
+Partition 00000: 1, 2, 3
+Partition 00001: 4, 5, 6
+Partition 00002: 7, 8, 9
+Partition 00003: 10, 11, 12
+Let's do a full-shuffle with the repartition method and get this data on two nodes.
+
+val numbersDfR = numbersDf.repartition(2)
+Here is how the numbersDfR data is partitioned on my machine:
+
+Partition A: 1, 3, 4, 6, 7, 9, 10, 12
+Partition B: 2, 5, 8, 11
+The repartition method makes new partitions and evenly distributes the data in the new partitions (the data distribution is more even for larger data sets).
+
+Difference between coalesce and repartition
+
+coalesce uses existing partitions to minimize the amount of data that's shuffled.  repartition creates new partitions and does a full shuffle.  coalesce results in partitions with different amounts of data (sometimes partitions that have much different sizes) and repartition results in roughly equal sized partitions.
+
+Is coalesce or repartition faster?
+
+coalesce may run faster than repartition, but unequal sized partitions are generally slower to work with than equal sized partitions. You'll usually need to repartition datasets after filtering a large data set. I've found repartition to be faster overall because Spark is built to work with equal sized partitions.
