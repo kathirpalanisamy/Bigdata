@@ -3,3 +3,22 @@ Caching or persistence are optimisation techniques for (iterative and interactiv
 RDDs can be cached using cache operation. They can also be persisted using persist operation.
 
 The difference between cache and persist operations is purely syntactic. cache is a synonym of persist or persist(MEMORY_ONLY), i.e. cache is merely persist with the default storage level MEMORY_ONLY.
+
+
+
+Most RDD operations are lazy. Think of an RDD as a description of a series of operations. An RDD is not data. So this line:
+
+val textFile = sc.textFile("/user/emp.txt")
+It does nothing. It creates an RDD that says "we will need to load this file". The file is not loaded at this point.
+
+RDD operations that require observing the contents of the data cannot be lazy. (These are called actions.) An example is RDD.count — to tell you the number of lines in the file, the file needs to be read. So if you write textFile.count, at this point the file will be read, the lines will be counted, and the count will be returned.
+
+What if you call textFile.count again? The same thing: the file will be read and counted again. Nothing is stored. An RDD is not data.
+
+So what does RDD.cache do? If you add textFile.cache to the above code:
+
+val textFile = sc.textFile("/user/emp.txt")
+textFile.cache
+It does nothing. RDD.cache is also a lazy operation. The file is still not read. But now the RDD says "read this file and then cache the contents". If you then run textFile.count the first time, the file will be loaded, cached, and counted. If you call textFile.count a second time, the operation will use the cache. It will just take the data from the cache and count the lines.
+
+The cache behavior depends on the available memory. If the file does not fit in the memory, for example, then textFile.count will fall back to the usual behavior and re-read the file.
