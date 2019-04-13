@@ -1,4 +1,4 @@
-groupByKey - all the key-value pairs are shuffled around. This is a lot of unnessary data to being transferred over the network.
+groupByKey: All the key-value pairs are shuffled around. This is a lot of unnessary data to being transferred over the network.
 
 reduceByKey: Data is combined at each partition, only one output for one key at each partition to send over network. While both reducebykey and groupbykey will produce the same answer, the reduceByKey example works much better on a large dataset. That's because Spark knows it can combine output with a common key on each partition before shuffling the data.
 
