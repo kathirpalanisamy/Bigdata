@@ -69,7 +69,7 @@ while i <= 8:
             display_board()
             i += 1
         else:
-            print 'THIS PLACE IS ALREADY TAKEN, TRY A NEW POSITION!'
+            print 'THIS PLACE IS ALREADY TAKEN, TRY A NEW POSITION!!'
             display_board()
             continue
     else:
