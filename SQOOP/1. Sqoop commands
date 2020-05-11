@@ -348,5 +348,3 @@ hadoop fs -mv /user/cloudera/sqoop_merge/departments_stage /user/cloudera/sqoop_
 
 --Validate that original directory have merged data
 hadoop fs -cat /user/cloudera/sqoop_merge/departments/part*
-
---Merge process ends
