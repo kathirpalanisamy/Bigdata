@@ -1,4 +1,4 @@
-// Converting a Text file into a Sequence file
+// Converting a Text file into Sequence file
 
 // Sequence file follows [Key, Value] format so we need to convert the data into [Key, Value] format before saving it as a Sequence file
 
